@@ -1,2 +1,2 @@
 # VueQuiz
-Practive Vue
+Practice Vue
