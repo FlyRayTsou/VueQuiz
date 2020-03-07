@@ -17,21 +17,25 @@
                     {{ answer }}
                 </b-list-group-item>
             </b-list-group>
-            <b-button variant="primary" href="#">Submit</b-button>
+            <b-button variant="primary" href="#" v-on:click="submitAnswer" :disabled="selectedIndex===null || answered">Submit</b-button>
             <b-button variant="success" href="#" v-on:click="nextQuestion">Next</b-button>
         </b-jumbotron>
     </div>
 </template>
 
 <script>
+import lodash from 'lodash'
 export default {
     props: {
         currentQuestion: Object,
-        nextQuestion: Function
+        nextQuestion: Function,
+        increment: Function
     },
     data() {
         return {
-            selectedIndex: null
+            selectedIndex: null,
+            shuffledAnswers:[],
+            answered : false
         }
     },
     computed: {
@@ -40,9 +44,31 @@ export default {
             return answers;
         } 
     },
+    watch: {
+        currentQuestion: {
+            immediate: true,
+            handler() {
+                this.selectedIndex = null;
+                this.answered = false;
+                this.shffleAnswers();
+            }
+        }
+    },
     methods: {
         selectAnswer(index) {
             this.selectedIndex = index;
+        },
+        submitAnswer() {
+            let isCorrect = false;
+            if (this.selectedIndex === this.correctIndex) {
+                isCorrect = true;
+            }
+            this.answered = true
+            this.increment(isCorrect);
+        },
+        shffleAnswers() {
+            let answers = [...this.currentQuestion.incorrect_answers, this.currentQuestion.correct_answer];
+            this.shuffledAnswers = lodash.shuffle(answers);
         }
     }
 }
