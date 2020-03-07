@@ -12,12 +12,7 @@
                     v-for="(answer, index) in answers"
                     :key="index"
                     v-on:click="selectAnswer(index)"
-                    :class="[
-                        !answered && selectedIndex === index ? 'selected' :
-                        answered && correctIndex === index ? 'correct' : 
-                        answered && correctIndex !== index && selectedIndex === index ? 'incorrect' : ''
-                    ]"
-                >
+                    :class="answerClass(index)">
                     {{ answer }}
                 </b-list-group-item>
             </b-list-group>
@@ -75,6 +70,18 @@ export default {
             let answers = [...this.currentQuestion.incorrect_answers, this.currentQuestion.correct_answer];
             this.shuffledAnswers = lodash.shuffle(answers);
             this.correctIndex = this.shuffledAnswers.indexOf(this.currentQuestion.correct_answer);
+        },
+        answerClass(index) {
+            let answerClass = '';
+            if(!this.answered && this.selectedIndex === index) {
+                answerClass = 'selected';
+            } else if (this.answered && this.correctIndex === index) {
+                answerClass = 'correct';
+            } else if (this.answered && this.correctIndex !== index && this.selectedIndex === index) {
+                answerClass = 'incorrect';
+            }
+
+            return answerClass;
         }
     }
 }
